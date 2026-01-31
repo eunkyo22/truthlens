@@ -3,14 +3,58 @@ import time
 
 st.set_page_config(page_title="Truth Lens - 로맨스 스캠", layout="centered")
 
+# 밝은 UI CSS
+st.markdown("""
+<style>
+    .main {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        padding: 2rem;
+    }
+    
+    .main > div {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
+    h1, h2, h3 {
+        color: #ff6b6b !important;
+    }
+    
+    [data-testid="stChatMessageContent"] {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1rem;
+        color: #333 !important;
+    }
+    
+    [data-testid="stChatMessageContent"] p {
+        color: #333 !important;
+    }
+    
+    .stButton > button {
+        border-radius: 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # 세션 초기화
 if 'step_a' not in st.session_state:
     st.session_state.step_a = 1
 if 'verification_status' not in st.session_state:
-    st.session_state.verification_status = "NONE" # NONE, FAIL, SUCCESS, FINAL_WARNING
+    st.session_state.verification_status = "NONE"
 
-st.header("📱 인스타그램 DM (시뮬레이션)")
-st.caption("시나리오: 친밀감 형성 후 투자 사기 유도")
+st.markdown("<h2 style='text-align: center;'>💔 로맨스 스캠 시뮬레이션</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #888;'>시나리오: 친밀감 형성 후 투자 사기 유도</p>", unsafe_allow_html=True)
+st.markdown("")
 
 # --- 채팅 화면 ---
 chat_container = st.container(border=True)
@@ -30,46 +74,75 @@ if st.session_state.step_a == 3:
         st.error("🚨 Truth Lens: 고위험 송금 감지!")
         st.write("로맨스 스캠 패턴 일치율 **92%**. 잠시 멈추세요.")
 
-        st.warning("🧠 잠깐! 퀴즈입니다.")
+        # 퀴즈 1: AI 이미지 구별 퀴즈
+        st.warning("🧠 퀴즈 1: AI 이미지를 구별할 수 있나요?")
+        st.write("아래 중 **AI가 생성한 프로필 사진**을 고르세요:")
+        st.caption("💡 힌트: 손, 눈, 배경의 부자연스러움을 주의깊게 보세요")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.image("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop", 
+                     caption="이미지 A", use_container_width=True)
+            if st.button("A 선택", key="img_a", use_container_width=True):
+                st.error("❌ 틀렸습니다. 이건 실제 사진입니다.")
+                st.info("🚨 당신은 AI 이미지를 구별할 수 없습니다.")
+                
+        with col2:
+            st.image("https://this-person-does-not-exist.com/img/avatar-gen117c596e2d604bc1930c7bffd01c6c3.jpg", 
+                     caption="이미지 B", use_container_width=True)
+            if st.button("B 선택", key="img_b", use_container_width=True):
+                st.success("✅ 정답! 하지만 구별이 쉽지 않았죠?")
+                st.info("💡 **로맨스 스캠범의 73%가 AI 생성 프로필 사진을 사용합니다.** 사진이 진짜라고 해서 사람도 진짜인 건 아닙니다.")
+                st.warning("🚨 AI 이미지 단서: 배경이 흐릿하고 부자연스러운 부분이 있음")
+                
+        with col3:
+            st.image("https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop", 
+                     caption="이미지 C", use_container_width=True)
+            if st.button("C 선택", key="img_c", use_container_width=True):
+                st.error("❌ 틀렸습니다. 이건 실제 사진입니다.")
+                st.info("🚨 당신은 AI 이미지를 구별할 수 없습니다.")
+
+        st.markdown("---")
+
+        # 퀴즈 2: 만난 적 있나요?
+        st.warning("🧠 퀴즈 2: 현실 점검")
         st.write("Q: 상대방을 실제로 만난 적이 있나요?")
 
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("예, 만났어요"):
+            if st.button("예, 만났어요", key="met_yes"):
                 st.error("❌ 거짓말입니다. 당신은 한 번도 만난 적이 없습니다.")
         with col2:
-            if st.button("아니요, 없어요"):
+            if st.button("아니요, 없어요", key="met_no"):
                 st.success("✅ 정답! 그런데 왜 돈을 보내려고 하시나요?")
         
-        # [변경점 1] 따라써야 할 문구를 가장 위로 배치하고 강조
+        st.markdown("---")
+        
+        # 따라쓰기 검증
         target_sentence = "나는 실제로 만난 적 없는 사람에게 돈을 보낸다"
         st.warning(f"**[현실 자각 퀴즈]** 송금을 진행하려면 아래 문장을 띄어쓰기 포함 정확히 입력하세요.")
-        st.markdown(f"### 🗣️ \"{target_sentence}\"") # 크고 명확하게 표시
+        st.markdown(f"### 🗣️ \"{target_sentence}\"")
         
         user_input = st.text_input("위 문장을 그대로 따라 쓰세요:", key="input_a")
 
-        # 검증 버튼
         if st.button("확인 및 송금 진행"):
             if user_input.strip() == target_sentence:
                 st.session_state.verification_status = "SUCCESS"
             else:
                 st.session_state.verification_status = "FAIL"
 
-        # [변경점 2] 틀렸을 경우 다른 문구(에러 메시지)로 재작성 유도
         if st.session_state.verification_status == "FAIL":
             st.toast("❌ 문장이 일치하지 않습니다.", icon="🚫")
             st.error("⚠️ 틀렸습니다. 토씨 하나 틀리지 않고 정확하게 다시 작성하십시오. 당신의 소중한 자산을 지키기 위함입니다.")
 
-        # [변경점 3] 맞게 썼을 때 1차 성공 -> 송금 버튼 노출
         if st.session_state.verification_status == "SUCCESS":
             st.success("✅ 문장 확인 완료. 버튼이 활성화되었습니다.")
             
-            # 송금 버튼을 누르면 바로 넘어가는 게 아니라 '이중 경고' 단계로 진입
             if st.button("💸 500만원 송금하기", type="primary"):
                 st.session_state.verification_status = "FINAL_WARNING"
                 st.rerun()
 
-        # [변경점 4] 송금 버튼을 눌렀을 때 뜨는 '최종 경고(Last Warning)'
         if st.session_state.verification_status == "FINAL_WARNING":
             st.markdown("---")
             st.error("🛑 **잠깐! 마지막 경고입니다.**")
@@ -86,7 +159,6 @@ if st.session_state.step_a == 3:
                      st.session_state.verification_status = "REAL_END"
                      st.rerun()
 
-        # 송금 취소 버튼 (항시 노출)
         if st.session_state.verification_status != "FINAL_WARNING":
             if st.button("송금 취소 및 차단"):
                 st.session_state.step_a = 4

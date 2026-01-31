@@ -2,14 +2,58 @@ import streamlit as st
 
 st.set_page_config(page_title="Truth Lens - 사칭 사기", layout="centered")
 
+# 밝은 UI CSS
+st.markdown("""
+<style>
+    .main {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        padding: 2rem;
+    }
+    
+    .main > div {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
+    h1, h2, h3 {
+        color: #667eea !important;
+    }
+    
+    [data-testid="stChatMessageContent"] {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1rem;
+        color: #333 !important;
+    }
+    
+    [data-testid="stChatMessageContent"] p {
+        color: #333 !important;
+    }
+    
+    .stButton > button {
+        border-radius: 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # 세션 초기화
 if 'step_b' not in st.session_state:
     st.session_state.step_b = 1
 if 'verify_b' not in st.session_state:
     st.session_state.verify_b = "NONE"
 
-st.header("📱 문자/카카오톡 (시뮬레이션)")
-st.caption("시나리오: 검찰 사칭 및 악성 앱 설치 유도 (공포 마케팅)")
+st.markdown("<h2 style='text-align: center;'>⚖️ 검찰 사칭 시뮬레이션</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #888;'>시나리오: 검찰 사칭 및 악성 앱 설치 유도 (공포 마케팅)</p>", unsafe_allow_html=True)
+st.markdown("")
 
 # --- 채팅 화면 ---
 chat_container = st.container(border=True)
@@ -29,7 +73,26 @@ if st.session_state.step_b == 3:
         st.error("🚨 Truth Lens: 악성 앱 설치 차단!")
         st.write("공포감을 조성해 이성을 마비시키는 전형적인 사칭 수법입니다.")
 
-        st.warning("🧠 현실 자각 퀴즈")
+        # 퀴즈 1: AI 음성 구별
+        st.warning("🧠 퀴즈 1: AI 음성을 구별할 수 있나요?")
+        st.write("요즘 사기범들은 **AI 음성 복제 기술**로 가족이나 지인의 목소리를 흉내냅니다.")
+        
+        st.info("💡 **실제 사례**: 2024년 한 피해자는 '아들의 목소리'로 전화받고 5,000만원을 송금했습니다. 나중에 AI 음성으로 밝혀졌습니다.")
+        
+        st.write("만약 전화로 긴급 송금 요청을 받는다면?")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("목소리가 진짜 같으면 보낸다", key="voice_trust"):
+                st.error("❌ 위험합니다! AI는 3초만 들으면 목소리를 복제할 수 있습니다.")
+        with col2:
+            if st.button("직접 영상통화로 확인한다", key="voice_verify"):
+                st.success("✅ 정답! 음성만으로는 절대 신뢰하면 안 됩니다.")
+
+        st.markdown("---")
+
+        # 퀴즈 2: 검찰청 번호
+        st.warning("🧠 퀴즈 2: 실제 검찰청 번호를 아시나요?")
         st.write("Q: 실제 검찰청 대표번호는?")
 
         answer = st.text_input("번호를 입력하세요:")
@@ -39,7 +102,9 @@ if st.session_state.step_b == 3:
             else:
                 st.error("❌ 틀렸습니다. 실제 번호는 1301입니다.")
 
-        # [변경점 1] 따라써야 할 문구 상단 배치
+        st.markdown("---")
+
+        # 따라쓰기 검증
         target_sentence = "수사 기관은 절대로 앱 설치나 송금을 요구하지 않는다"
         st.warning("**[현실 자각 퀴즈]** 설치를 진행하려면 아래 사실을 직접 타이핑하여 인지하십시오.")
         st.markdown(f"### 🗣️ \"{target_sentence}\"")
@@ -52,21 +117,17 @@ if st.session_state.step_b == 3:
             else:
                 st.session_state.verify_b = "FAIL"
 
-        # [변경점 2] 틀렸을 때 경고 메시지 변경
         if st.session_state.verify_b == "FAIL":
             st.toast("❌ 일치하지 않습니다.", icon="🚫")
             st.error("⚠️ 입력한 문장이 틀렸습니다. 마음을 가라앉히고 위 문장을 **정확하게** 다시 입력하세요.")
 
-        # [변경점 3] 성공 시 -> 설치 버튼 노출
         if st.session_state.verify_b == "SUCCESS":
             st.success("✅ 인지 확인 완료.")
             
-            # 설치 버튼 클릭 시 이중 경고로 이동
             if st.button("📲 앱 설치하기 (위험)", type="primary"):
                 st.session_state.verify_b = "FINAL_WARNING"
                 st.rerun()
         
-        # [변경점 4] 설치 버튼 클릭 후 최종 경고
         if st.session_state.verify_b == "FINAL_WARNING":
             st.markdown("---")
             st.error("🛑 **정말 설치하시겠습니까?**")

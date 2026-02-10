@@ -84,7 +84,7 @@ if st.session_state.step_a == 3:
         
         with col1:
             st.image("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop", 
-                     caption="이미지 A (실제)", use_container_width=True)
+                     caption="이미지 A", use_container_width=True)
             if st.button("A 선택", key="img_a", use_container_width=True):
                 st.error("❌ 틀렸습니다. 이건 실제 사진입니다.")
                 st.info("🚨 당신은 AI 이미지를 구별할 수 없습니다.")
@@ -95,7 +95,7 @@ if st.session_state.step_a == 3:
             scam_img_path = os.path.join(current_dir, "scam_photo.jpg")
             
             if os.path.exists(scam_img_path):
-                st.image(scam_img_path, caption="이미지 B (AI 생성)", use_container_width=True)
+                st.image(scam_img_path, caption="이미지 B", use_container_width=True)
             else:
                 # 폴더 구조상 예외 상황 대응
                 st.warning("⚠️ 사진 파일을 찾을 수 없습니다.")
@@ -108,7 +108,7 @@ if st.session_state.step_a == 3:
                 
         with col3:
             st.image("https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop", 
-                     caption="이미지 C (실제)", use_container_width=True)
+                     caption="이미지 C ", use_container_width=True)
             if st.button("C 선택", key="img_c", use_container_width=True):
                 st.error("❌ 틀렸습니다. 이건 실제 사진입니다.")
                 st.info("🚨 당신은 AI 이미지를 구별할 수 없습니다.")
@@ -122,7 +122,7 @@ if st.session_state.step_a == 3:
         col1, col2 = st.columns(2)
         with col1:
             if st.button("예, 만났어요", key="met_yes"):
-                st.error("❌ 거짓말입니다. 당신은 한 번도 만난 적이 없습니다.")
+                st.error(" 돈 관련 문제는 실제로 데이트 폭행이나 사기에 연관되어있을 수 있으니 고려해보세요.")
         with col2:
             if st.button("아니요, 없어요", key="met_no"):
                 st.success("✅ 정답! 그런데 왜 돈을 보내려고 하시나요?")

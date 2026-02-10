@@ -88,20 +88,24 @@ if st.session_state.step_a == 3:
             if st.button("A 선택", key="img_a", use_container_width=True):
                 st.error("❌ 틀렸습니다. 이건 실제 사진입니다.")
                 st.info("🚨 당신은 AI 이미지를 구별할 수 없습니다.")
-                
-        with col2:
-            # --- 수정된 이미지 B 호출 부분 ---
-            scam_img_path = "scam_photo.jpg"
+     with col2:
+            # 현재 실행 중인 파일(romance_scam.py)의 위치를 기준으로 경로 설정
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            scam_img_path = os.path.join(current_dir, "scam_photo.jpg")
+            
             if os.path.exists(scam_img_path):
                 st.image(scam_img_path, caption="이미지 B (AI 생성)", use_container_width=True)
             else:
-                st.info("🖼️ [이미지 준비 중]\n(scam_photo.jpg 파일이 없습니다)")
+                # 위 경로로 실패할 경우를 대비한 기본 경로 호출 시도
+                try:
+                    st.image("pages/scam_photo.jpg", caption="이미지 B (AI 생성)", use_container_width=True)
+                except:
+                    st.error("🖼️ 이미지를 찾을 수 없습니다. (scam_photo.jpg)")
             
             if st.button("B 선택", key="img_b", use_container_width=True):
                 st.success("✅ 정답! 하지만 구별이 쉽지 않았죠?")
                 st.info("💡 **로맨스 스캠범의 73%가 AI 생성 프로필 사진을 사용합니다.** 사진이 진짜라고 해서 사람도 진짜인 건 아닙니다.")
                 st.warning("🚨 AI 이미지 단서: 배경이 흐릿하고 부자연스러운 부분이 있음")
-                
         with col3:
             st.image("https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop", 
                      caption="이미지 C (실제)", use_container_width=True)

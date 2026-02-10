@@ -1,5 +1,6 @@
 import streamlit as st
 import time
+import os
 
 st.set_page_config(page_title="Truth Lens - 로맨스 스캠", layout="centered")
 
@@ -83,14 +84,19 @@ if st.session_state.step_a == 3:
         
         with col1:
             st.image("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop", 
-                     caption="이미지 A", use_container_width=True)
+                     caption="이미지 A (실제)", use_container_width=True)
             if st.button("A 선택", key="img_a", use_container_width=True):
                 st.error("❌ 틀렸습니다. 이건 실제 사진입니다.")
                 st.info("🚨 당신은 AI 이미지를 구별할 수 없습니다.")
                 
         with col2:
-            st.image("https://this-person-does-not-exist.com/img/avatar-gen117c596e2d604bc1930c7bffd01c6c3.jpg", 
-                     caption="이미지 B", use_container_width=True)
+            # --- 수정된 이미지 B 호출 부분 ---
+            scam_img_path = "scam_photo.jpg"
+            if os.path.exists(scam_img_path):
+                st.image(scam_img_path, caption="이미지 B (AI 생성)", use_container_width=True)
+            else:
+                st.info("🖼️ [이미지 준비 중]\n(scam_photo.jpg 파일이 없습니다)")
+            
             if st.button("B 선택", key="img_b", use_container_width=True):
                 st.success("✅ 정답! 하지만 구별이 쉽지 않았죠?")
                 st.info("💡 **로맨스 스캠범의 73%가 AI 생성 프로필 사진을 사용합니다.** 사진이 진짜라고 해서 사람도 진짜인 건 아닙니다.")
@@ -98,7 +104,7 @@ if st.session_state.step_a == 3:
                 
         with col3:
             st.image("https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop", 
-                     caption="이미지 C", use_container_width=True)
+                     caption="이미지 C (실제)", use_container_width=True)
             if st.button("C 선택", key="img_c", use_container_width=True):
                 st.error("❌ 틀렸습니다. 이건 실제 사진입니다.")
                 st.info("🚨 당신은 AI 이미지를 구별할 수 없습니다.")
